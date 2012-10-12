@@ -59,6 +59,7 @@ namespace Howitzer
         private int Init()
         {
             if (DX.ChangeWindowMode(DX.TRUE) != DX.DX_CHANGESCREEN_OK)
+            //if (DX.ChangeWindowMode(DX.FALSE) != DX.DX_CHANGESCREEN_OK)
             {
                 Error("Failed to set to window mode");
                 return -1;
@@ -70,7 +71,7 @@ namespace Howitzer
                 return -1;
             }
 
-            if (DX.SetGraphMode(640, 480, 32) != DX.DX_CHANGESCREEN_OK)
+            if (DX.SetGraphMode(900, 675, 32) != DX.DX_CHANGESCREEN_OK)
             {
                 Error("This graphic card must support 640x480 32bits color");
                 return -1;

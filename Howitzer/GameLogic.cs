@@ -17,6 +17,7 @@ namespace Howitzer
         private double bulletAzimuth;
         private PolarPoint bulletTarget = null;
         private double bulletSpeed = 7.0;
+        private double firingAngle;
 
         private Vector3D<double> howitzerPosition; // 砲の位置（左手座標、画面奥がZ）
 
@@ -32,7 +33,8 @@ namespace Howitzer
 
         private int dokuroX, dokuroY, dokuroWidth2;
 
-        private SerialPort serialPort = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
+        //private SerialPort serialPort = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
+        private ServoController serialPort = new ServoController("COM3");
 
         private int phase = 0;
         private int waitUntil = 0;
@@ -71,7 +73,9 @@ namespace Howitzer
 
             dokuroImage = DX.LoadGraph(Path.Combine(gconf.DataDirectory.FullName, "dokuro.png"));
 
-            serialPort.Open();
+            //serialPort.Open();
+
+            DX.SetMouseDispFlag(DX.FALSE);
 
             return 0;
         }
@@ -124,6 +128,9 @@ namespace Howitzer
             MoveCamera();
 
             debugWindow.Draw();
+
+            DX.DrawCircle(mouse.X, mouse.Y, 10, DX.GetColor(0, 255, 0), DX.FALSE);
+            DX.DrawCircle(mouse.X, mouse.Y, 8, DX.GetColor(0, 255, 0), DX.FALSE);
             return false;
         }
 
@@ -297,9 +304,17 @@ namespace Howitzer
 
                 bulletTarget = pp;
 
-                double srv1Deg = pp.Elevation * 180 / Math.PI;
+                double v0 = bulletSpeed;
+                double g = 9.8;
+                double[] angles = Util.CalcFiringAngle(bulletTarget.Length / 1000.0, bulletTarget.Elevation, v0, g);
+                this.firingAngle = angles[directShot ? 0 : 1];
+
+                double srv1Deg = firingAngle * 180 / Math.PI;
                 double srv2Deg = pp.Azimuth * 180 / Math.PI;
-                serialPort.Write(string.Format("srv1:{0}\n", (int)Math.Round(1500 + srv1Deg * 10))); // 1500 usec中心
+
+                int tmp = (int)Math.Round(1500 + srv1Deg * 7);
+                serialPort.Write(string.Format("srv1:{0}\n", tmp)); // 1500 usec中心
+                Console.WriteLine(string.Format("{0}, {1}", srv1Deg, tmp));
                 serialPort.Write(string.Format("srv2:{0}\n", (int)Math.Round(1500 + srv2Deg * 10))); // 1500 usec中心
                 // http://homepage3.nifty.com/rio_i/lab/avr/09pwm.html
 
@@ -330,8 +345,6 @@ namespace Howitzer
                 double v0 = bulletSpeed;
                 double g = 9.8;
 
-                double[] angles = Util.CalcFiringAngle(bulletTarget.Length / 1000.0, bulletTarget.Elevation, v0, g);
-                double firingAngle = angles[directShot ? 0 : 1];
                 double sin = Math.Sin(firingAngle), cos = Math.Cos(firingAngle);
 
                 debugWindow.Update("12:FANG", (firingAngle * 180 / Math.PI).ToString("F02"));
