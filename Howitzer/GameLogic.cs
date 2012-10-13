@@ -106,6 +106,8 @@ namespace Howitzer
 
             bool mouseInScreen = 0 <= mouse.X && mouse.X < screenX && 0 <= mouse.Y && mouse.Y < screenY;
 
+            DX.SetMouseDispFlag(mouseInScreen ? DX.FALSE : DX.TRUE);
+
             if (keyboard.GetHitPeriod(DX.KEY_INPUT_AT) == 1)
             {
                 directShot = !directShot;
@@ -129,8 +131,11 @@ namespace Howitzer
 
             debugWindow.Draw();
 
-            DX.DrawCircle(mouse.X, mouse.Y, 10, DX.GetColor(0, 255, 0), DX.FALSE);
-            DX.DrawCircle(mouse.X, mouse.Y, 8, DX.GetColor(0, 255, 0), DX.FALSE);
+            if (mouseInScreen)
+            {
+                DX.DrawCircle(mouse.X, mouse.Y, 10, DX.GetColor(0, 255, 0), DX.FALSE);
+                DX.DrawCircle(mouse.X, mouse.Y, 8, DX.GetColor(0, 255, 0), DX.FALSE);
+            }
             return false;
         }
 
