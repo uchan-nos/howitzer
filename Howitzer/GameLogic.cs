@@ -307,6 +307,9 @@ namespace Howitzer
                 int mouseYCenter = screenY / 2 - mouse.Y;
                 PolarPoint pp = GetPolarPointAt(mouseXCenter, mouseYCenter, depthAtMouse);
 
+                double diffBulletAzimuth = pp.Azimuth - 
+                    (bulletTarget != null ? bulletTarget.Azimuth : 0);
+
                 bulletTarget = pp;
 
                 double v0 = bulletSpeed;
@@ -323,7 +326,7 @@ namespace Howitzer
                 serialPort.Write(string.Format("srv2:{0}\n", (int)Math.Round(1500 + srv2Deg * 10))); // 1500 usec中心
                 // http://homepage3.nifty.com/rio_i/lab/avr/09pwm.html
 
-                waitUntil = gameStatus.CurrentTimeInMillis + 7000;
+                waitUntil = gameStatus.CurrentTimeInMillis + (int) (7000 * Math.Abs(diffBulletAzimuth) / Math.PI) + 1000;
                 DX.PlaySoundMem(turretMoveSound, DX.DX_PLAYTYPE_BACK);
                 //waitUntil = gameStatus.CurrentTimeInMillis;
 
@@ -371,6 +374,7 @@ namespace Howitzer
 
                 //Console.WriteLine(string.Format("{0:F2},{1:F2}", angles[0] * 180 / Math.PI, angles[1] * 180 / Math.PI));
 
+                DX.StopSoundMem(turretMoveSound);
                 DX.PlaySoundMem(fireSound, DX.DX_PLAYTYPE_BACK);
             }
 
