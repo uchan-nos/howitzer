@@ -82,25 +82,32 @@ namespace Howitzer
             base._Update(status);
             UpdateBullet(status);
 
+            if (Keyboard.GetHitPeriod(DX.KEY_INPUT_AT) == 1)
+            {
+                directShot = !directShot;
+            }
+
             foreach (var obj in gameObjects)
             {
                 obj.Update(status);
+            }
+
+            if (Keyboard.IsHit(DX.KEY_INPUT_ESCAPE))
+            {
+                PauseScene s = new PauseScene();
+                s.Init(GameSettings);
+                CallScene(s);
             }
         }
 
         protected override void _Draw()
         {
+
             int screenX = GameSettings.WindowWidth;
             int screenY = GameSettings.WindowHeight;
 
             bool mouseInScreen = 0 <= Mouse.X && Mouse.X < screenX && 0 <= Mouse.Y && Mouse.Y < screenY;
 
-            DX.SetMouseDispFlag(mouseInScreen ? DX.FALSE : DX.TRUE);
-
-            if (Keyboard.GetHitPeriod(DX.KEY_INPUT_AT) == 1)
-            {
-                directShot = !directShot;
-            }
 
             if (!Keyboard.IsHit(DX.KEY_INPUT_SPACE))
             {
@@ -110,40 +117,71 @@ namespace Howitzer
             {
                 DrawSensorDepthImage();
             }
-            DrawHologram();
 
-            DX.SetFontSize(20);
 
-            MoveCamera();
-
-            DrawBullet(bulletHit);
-            if (drawDokuro)
+            if (this.Status == States.Resumed)
             {
-                DX.DrawExtendGraph(dokuroX - dokuroWidth2, dokuroY - dokuroWidth2, dokuroX + dokuroWidth2, dokuroY + dokuroWidth2, dokuroImage, DX.TRUE);
-            }
+                DrawHologram();
 
-            DebugWindow.Draw();
+                DX.SetFontSize(20);
 
-            if (mouseInScreen)
-            {
-                DX.DrawCircle(Mouse.X, Mouse.Y, 10, DX.GetColor(0, 255, 0), DX.FALSE);
-                DX.DrawCircle(Mouse.X, Mouse.Y, 8, DX.GetColor(0, 255, 0), DX.FALSE);
+                MoveCamera();
 
-                if (Mouse.Middle)
+                DrawBullet(bulletHit);
+                if (drawDokuro)
                 {
-                    CircleObject obj = new CircleObject();
-                    obj.Init(GameSettings);
-                    obj.Radius = 10;
-                    obj.X = Mouse.X;
-                    obj.Y = Mouse.Y;
-                    gameObjects.Add(obj);
+                    DX.DrawExtendGraph(dokuroX - dokuroWidth2, dokuroY - dokuroWidth2, dokuroX + dokuroWidth2, dokuroY + dokuroWidth2, dokuroImage, DX.TRUE);
+                }
+
+                DebugWindow.Draw();
+
+                if (mouseInScreen)
+                {
+                    if (Mouse.Middle)
+                    {
+                        CircleObject obj = new CircleObject();
+                        obj.Init(GameSettings);
+                        obj.Radius = 10;
+                        obj.X = Mouse.X;
+                        obj.Y = Mouse.Y;
+                        gameObjects.Add(obj);
+                    }
+                }
+
+                foreach (var obj in gameObjects)
+                {
+                    obj.Draw();
+                }
+
+                if (mouseInScreen)
+                {
+                    DX.SetMouseDispFlag(DX.FALSE);
+                    DX.DrawCircle(Mouse.X, Mouse.Y, 10, DX.GetColor(0, 255, 0), DX.FALSE);
+                    DX.DrawCircle(Mouse.X, Mouse.Y, 8, DX.GetColor(0, 255, 0), DX.FALSE);
+                }
+                else
+                {
+                    DX.SetMouseDispFlag(DX.TRUE);
                 }
             }
-
-            foreach (var obj in gameObjects)
+            else
             {
-                obj.Draw();
+                DX.SetMouseDispFlag(DX.TRUE);
             }
+        }
+
+        protected override void _Resume()
+        {
+            base._Resume();
+
+            Console.WriteLine("MainScene resume");
+        }
+
+        protected override void _Pause()
+        {
+            base._Pause();
+
+            Console.WriteLine("MainScene stop");
         }
 
         private void Error(string msg)

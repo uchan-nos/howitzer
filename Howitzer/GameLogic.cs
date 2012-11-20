@@ -17,6 +17,46 @@ namespace Howitzer
         private GameSettings gameSettings = new GameSettings();
         private ServoController serialPort = new ServoController("COM3");
 
+        public Keyboard Keyborad
+        {
+            get
+            {
+                return keyboard;
+            }
+        }
+
+        public Mouse Mouse
+        {
+            get
+            {
+                return mouse;
+            }
+        }
+
+        public Sensor Sensor
+        {
+            get
+            {
+                return sensor;
+            }
+        }
+
+        public DebugWindow DebugWindow
+        {
+            get
+            {
+                return debugWindow;
+            }
+        }
+
+        public GameSettings GameSettings
+        {
+            get
+            {
+                return gameSettings;
+            }
+        }
+
         private SceneStack sceneStack = new SceneStack();
 
         /// <summary>
@@ -42,6 +82,7 @@ namespace Howitzer
             gameSettings.WindowWidth = screenX;
             gameSettings.WindowHeight = screenY;
             gameSettings.ScreenBits = screenBits;
+            gameSettings.GameLogic = this;
 
             debugWindow.Height = screenY / 2 - 10;
             debugWindow.Width = screenX / 4 - 10;

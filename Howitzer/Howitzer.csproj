@@ -69,6 +69,7 @@
     <Compile Include="MainScene.cs" />
     <Compile Include="Mouse.cs" />
     <Compile Include="NotInitializedException.cs" />
+    <Compile Include="PauseScene.cs" />
     <Compile Include="PixelPoint.cs" />
     <Compile Include="PolarPoint.cs" />
     <Compile Include="Program.cs" />

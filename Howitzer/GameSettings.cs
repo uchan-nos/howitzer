@@ -24,5 +24,11 @@ namespace Howitzer
             set;
             get;
         }
+
+        public GameLogic GameLogic
+        {
+            get;
+            set;
+        }
     }
 }

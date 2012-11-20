@@ -24,6 +24,18 @@ namespace Howitzer
             this.scenes = scenes;
         }
 
+
+        public enum States
+        {
+            Resumed, Paused
+        }
+
+        public States Status
+        {
+            get;
+            private set;
+        }
+
 #if CHECK_INITIALIZED
         /// <summary>
         /// このインスタンスが初期化されているか
@@ -50,6 +62,7 @@ namespace Howitzer
             this.initialized = true;
 #endif
             this.GameSettings = settings;
+            this.Status = States.Paused;
 
             _Init(settings);
 
@@ -122,7 +135,7 @@ namespace Howitzer
         /// <summary>
         /// シーンが最前面でなくなる
         /// </summary>
-        public void Stop()
+        public void Pause()
         {
 #if CHECK_INITIALIZED
             if (!initialized)
@@ -131,10 +144,11 @@ namespace Howitzer
             }
 #endif
 
-            _Stop();
+            this.Status = States.Paused;
+            _Pause();
         }
 
-        protected virtual void _Stop()
+        protected virtual void _Pause()
         {
         }
 
@@ -150,6 +164,7 @@ namespace Howitzer
             }
 #endif
 
+            this.Status = States.Resumed;
             _Resume();
         }
 
