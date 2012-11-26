@@ -11,29 +11,37 @@ namespace Howitzer
     {
         public Mouse Mouse
         {
-            get;
-            set;
+            get
+            {
+                return GameSettings.GameLogic.Mouse;
+            }
         }
 
         public Keyboard Keyboard
         {
-            get;
-            set;
+            get
+            {
+                return GameSettings.GameLogic.Keyborad;
+            }
         }
 
         public Sensor Sensor
         {
-            get;
-            set;
-        }
-
-        public ServoController SerialPort
-        {
-            get;
-            set;
+            get
+            {
+                return GameSettings.GameLogic.Sensor;
+            }
         }
 
         public DebugWindow DebugWindow
+        {
+            get
+            {
+                return GameSettings.GameLogic.DebugWindow;
+            }
+        }
+
+        public ServoController SerialPort
         {
             get;
             set;
@@ -59,6 +67,8 @@ namespace Howitzer
         private bool directShot = true;
         private List<GameObject> gameObjects = new List<GameObject>();
 
+        private int previousMouseX, previousMouseY;
+        private int previousActionTime = -1; // 前回何かしらの操作をした時刻
 
         protected override void _Init(GameSettings settings)
         {
@@ -80,6 +90,12 @@ namespace Howitzer
         protected override void _Update(GameStatus status)
         {
             base._Update(status);
+            if (Mouse.Left || Mouse.Middle || Mouse.Right
+                || Mouse.X != previousMouseX || Mouse.Y != previousMouseY)
+            {
+                previousActionTime = status.CurrentTimeInMillis;
+            }
+
             UpdateBullet(status);
 
             if (Keyboard.GetHitPeriod(DX.KEY_INPUT_AT) == 1)
@@ -98,6 +114,18 @@ namespace Howitzer
                 s.Init(GameSettings);
                 CallScene(s);
             }
+
+            // 一定時間無操作なら、オープニング画面へ。
+            if ((status.CurrentTimeInMillis - previousActionTime) > 30 * 1000)
+            {
+                var s = new OpeningScene();
+                s.Init(GameSettings);
+                s.SerialPort = SerialPort;
+                GotoScene(s);
+            }
+
+            previousMouseX = Mouse.X;
+            previousMouseY = Mouse.Y;
         }
 
         protected override void _Draw()

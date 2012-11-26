@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicShapeObject.cs" />
+    <Compile Include="BezierMotion.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="CircleObject.cs" />
     <Compile Include="Configuration.cs" />
@@ -65,10 +67,13 @@
     <Compile Include="GameLogic.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameStatus.cs" />
+    <Compile Include="ImageFileObject.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="MainScene.cs" />
+    <Compile Include="Motion.cs" />
     <Compile Include="Mouse.cs" />
     <Compile Include="NotInitializedException.cs" />
+    <Compile Include="OpeningScene.cs" />
     <Compile Include="PauseScene.cs" />
     <Compile Include="PixelPoint.cs" />
     <Compile Include="PolarPoint.cs" />

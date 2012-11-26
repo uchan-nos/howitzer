@@ -91,14 +91,16 @@ namespace Howitzer
 
             //serialPort.Open();
 
+            /*
             var mainScene = new MainScene();
-            mainScene.Mouse = mouse;
-            mainScene.Keyboard = keyboard;
-            mainScene.Sensor = sensor;
             mainScene.SerialPort = serialPort;
-            mainScene.DebugWindow = debugWindow;
             mainScene.Init(gameSettings);
             sceneStack.Push(mainScene);
+             */
+            var s = new OpeningScene();
+            s.SerialPort = serialPort;
+            s.Init(gameSettings);
+            sceneStack.Push(s);
 
             return 0;
         }
