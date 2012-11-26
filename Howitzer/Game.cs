@@ -11,6 +11,14 @@ namespace Howitzer
         private GameStatus gameStatus = null;
         private GameLogic gameLogic = null;
 
+        public GameLogic GameLogic
+        {
+            get
+            {
+                return gameLogic;
+            }
+        }
+
         /// <summary>
         /// ゲームループを実行する
         /// </summary>
